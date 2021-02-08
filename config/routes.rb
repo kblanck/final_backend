@@ -10,6 +10,6 @@ Rails.application.routes.draw do
 
   delete '/glasses/:id', to: 'glasses#delete'
 
-  post '/glasses/:id', to: 'glasses#update'
+  put '/glasses/:id', to: 'glasses#update'
 
 end
