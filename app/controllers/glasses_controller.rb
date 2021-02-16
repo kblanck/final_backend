@@ -19,7 +19,12 @@ class GlassesController < ApplicationController
     end
 
     def update
+        puts params
         render json: Glass.update(params["id"], params["glass"])
+    end
+
+    def bought
+        render json: Glass.bought(params["glasses_id"])
     end
 
 end

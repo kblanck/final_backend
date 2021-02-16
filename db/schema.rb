@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2021_02_05_203626) do
     t.integer "id", default: -> { "nextval('items_id_seq'::regclass)" }, null: false
     t.string "name", limit: 30
     t.integer "price"
+    t.text "img_url"
     t.text "description"
   end
 

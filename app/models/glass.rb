@@ -14,7 +14,9 @@ class Glass < ApplicationRecord
                 "id" => result["id"].to_i,
                 "name" => result["name"],
                 "price" => result["price"].to_i,
-                "description" => result["description"]
+                "description" => result["description"],
+                "img_url" => result["img_url"],
+                "inventory" => result["inventory"].to_i,
             }
         end
     end
@@ -25,23 +27,27 @@ class Glass < ApplicationRecord
             "id" => results.first["id"].to_i,
             "name" => results.first["name"],
             "price" => results.first["price"].to_i,
-            "description" => results.first["description"]
+            "description" => results.first["description"],
+            "img_url" => results.first["img_url"],
+            "inventory" => results.first["inventory"].to_i
         }
     end
 
     def self.create(opts)
         results = DB.exec(
             <<-SQL
-                INSERT INTO glasses(name, price, description)
-                VALUES('#{opts["name"]}', #{opts["price"]}, '#{opts["description"]}')
-                RETURNING id, name, price, description;
+                INSERT INTO glasses(name, price, description, img_url, inventory)
+                VALUES('#{opts["name"]}', #{opts["price"]}, '#{opts["description"]}', '#{opts["img_url"]}', #{opts["inventory"]})
+                RETURNING id, name, price, description, img_url, inventory;
             SQL
         )
         return {
             "id" => results.first["id"].to_i,
             "name" => results.first["name"],
             "price" => results.first["price"].to_i,
-            "description" => results.first["description"]
+            "description" => results.first["description"],
+            "img_url" => results.first["img_url"],
+            "inventory" => results.first["inventory"].to_i
         }
     end
 
@@ -54,17 +60,28 @@ class Glass < ApplicationRecord
         results = DB.exec(
             <<-SQL
                 UPDATE glasses
-                SET name='#{opts["name"]}', price=#{opts["price"]}, description='#{opts["description"]}'
+                SET name='#{opts["name"]}', price=#{opts["price"]}, description='#{opts["description"]}', img_url='#{opts["img_url"]}', inventory=#{opts["inventory"]}
                 WHERE id=#{id}
-                RETURNING id, name, price, description
+                RETURNING id, name, price, description, img_url, inventory
             SQL
         )
-                return {
+        return {
             "id" => results.first["id"].to_i,
             "name" => results.first["name"],
             "price" => results.first["price"].to_i,
-            "description" => results.first["description"]
+            "description" => results.first["description"],
+            "img_url" => results.first["img_url"],
+            "inventory" => results.first["inventory"].to_i
         }
     end
 
+    def self.bought(glasses_id)
+        results = DB.exec(
+            <<-SQL
+                UPDATE glasses
+                SET inventory = inventory - 1
+                WHERE id=#{glasses_id}
+            SQL
+        )
+    end
 end
